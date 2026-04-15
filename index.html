@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SENAI</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  
+  <style>
+    * { margin: 0; padding: 0; }
+    html, body { 
+      height: 100%; 
+      background-color: #000000; 
+      overflow: hidden; /* Impede scroll na moldura externa */
+    }
+    iframe { 
+      width: 100%; 
+      height: 100%; 
+      border: none; 
+      display: block; 
+      background-color: #000000;
+    }
+  </style>
+</head>
+
+<body>
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbz_Tesh0J2lJudDTFB3xwvuRB3l-9qYOJ956yXNmfHguKb1q2o1r2_w3W6P_odsJSWa5A/exec"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-modals"
+  ></iframe>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
