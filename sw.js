@@ -44,7 +44,17 @@ self.addEventListener('fetch', event => {
   }
 
   // Shell local: cache first
-  event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+  // Shell local: Tenta rede primeiro, se falhar vai pro cache (Melhor para o index.html)
+event.respondWith(
+  fetch(event.request)
+    .then(response => {
+      // Atualiza o cache com a versão nova da rede
+      const resClone = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
+      return response;
+    })
+    .catch(() => caches.match(event.request)) // Se o servidor cair/offline, usa o cache
+);
+
   );
 });
