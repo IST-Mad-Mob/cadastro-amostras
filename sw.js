@@ -54,7 +54,5 @@ event.respondWith(
       return response;
     })
     .catch(() => caches.match(event.request)) // Se o servidor cair/offline, usa o cache
-);
-
   );
 });
