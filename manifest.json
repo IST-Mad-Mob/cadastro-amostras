@@ -1,7 +1,7 @@
 {
-  "name": "Kola",
-  "short_name": "Kola",
-  "description": "Aplicativo via Google Apps Script",
+  "name": "IST Mad. Mob.",
+  "short_name": "IST Mad. Mob.",
+  "description": "Aplicativo IST Mad. Mob.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
