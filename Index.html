@@ -1,38 +1,166 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SENAI</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />
-  
-  <style>
-    * { margin: 0; padding: 0; }
-    html, body { 
-      height: 100%; 
-      background-color: #000000; 
-      overflow: hidden; /* Impede scroll na moldura externa */
-    }
-    iframe { 
-      width: 100%; 
-      height: 100%; 
-      border: none; 
-      display: block; 
-      background-color: #000000;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>INSTITUTO SENAI DE TECNOLOGIA</title>
+    <link
+      rel="manifest"
+      href="manifest.json"
+    />
+    <meta
+      name="theme-color"
+      content="#005aa5"
+    />
 
-<body>
-  <iframe
-    src="https://script.google.com/macros/s/AKfycbzevlcL47stJZcdLrxkI-8bUs2J1Ttoe6xI_tuKD2PoIjQXx1Y65G3dYnCnFJ55ZgrT/exec"
-    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-modals"
-  ></iframe>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
-  </script>
-</body>
+    <style>
+      :root {
+        --primary-color: #005aa5;
+        --error-color: #d32f2f;
+        --bg-color: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        background-color: var(--bg-color);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        overflow: hidden;
+      }
+
+      /* Barra de Status Offline */
+      #status-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: var(--error-color);
+        color: white;
+        text-align: center;
+        padding: 8px 0;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 2000;
+        display: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Tela de Carregamento */
+      #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: opacity 0.4s ease-out;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        color: #333;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+      }
+
+      /* Iframe */
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.5s ease-in;
+      }
+
+      iframe.loaded {
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="status-bar">Você está desconectado. O sistema pode não funcionar corretamente.</div>
+
+    <div id="loader">
+      <div class="spinner"></div>
+      <p class="loading-text">Conectando ao sistema...</p>
+    </div>
+
+    <iframe
+      id="app-frame"
+      src="https://script.google.com/macros/s/AKfycbwmDyNapToqBdjMcGKYNrxk6jtS9KSitnhG8gN2B_TywUt9hbwHV0FigRK5hNC65pUc/exec"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-modals"
+    ></iframe>
+
+    <script>
+      const frame = document.getElementById("app-frame");
+      const loader = document.getElementById("loader");
+      const statusBar = document.getElementById("status-bar");
+
+      // Esconde loader quando iframe carrega
+      frame.onload = function () {
+        loader.style.opacity = "0";
+        frame.classList.add("loaded");
+        setTimeout(() => {
+          loader.style.display = "none";
+        }, 500);
+      };
+
+      // Gerenciamento de Conexão
+      function updateOnlineStatus() {
+        if (navigator.onLine) {
+          statusBar.style.display = "none";
+        } else {
+          statusBar.style.display = "block";
+        }
+      }
+
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
+
+      // Checagem inicial
+      updateOnlineStatus();
+
+      // Registro do Service Worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(console.error);
+        });
+      }
+    </script>
+  </body>
 </html>
